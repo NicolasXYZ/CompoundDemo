@@ -9,8 +9,14 @@ module.exports = function(app) {
   //  .post(todoList.create_a_task);
 
 
-  app.route('/tasks')
+  app.route('/checkAccountBalance')
     .get(todoList.list_Eth_wallets)
     //.put(todoList.update_a_task)
     //.delete(todoList.delete_a_task);
+
+  app.route('/startGanache')
+   .get(todoList.startGanache)
+
+  app.route('/supplycETH')
+  .get(todoList.supplycETH)
 };
