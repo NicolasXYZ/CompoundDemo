@@ -9,6 +9,10 @@ module.exports = function(app) {
   //  .post(todoList.create_a_task);
 
 
+  app.route('/checkAccruedComp')
+    .get(todoList.checkAccrComp)
+
+
   app.route('/checkAccountBalance')
     .get(todoList.list_Eth_wallets)
     //.put(todoList.update_a_task)

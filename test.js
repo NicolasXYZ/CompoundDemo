@@ -4,12 +4,26 @@ const Web3 = require('web3')
 //const web3 = new Web3('http://127.0.0.1:8545');
 const providers = ethers.provider
 const Compound = require('@compound-finance/compound-js'); // in Node.js
+const config = require('./config.json');
+
+const walletPrivateKey = process.env.walletPrivateKey;
+//const web3 = new Web3('https://rinkeby.infura.io/v3/57a1affeb69b411191e1471cbafc75ec');
 
 async function main() {
 const web3 = new Web3(Web3.givenProvider);
+
+
 //const web3Provider = new Web3.providers.HttpProvider('http://localhost:8545');
 //const provider = new ethers.providers.Web3Provider(web3.currentProvider)
 let provider= new ethers.providers.InfuraProvider('rinkeby');
+
+/*
+provider = new ethers.providers.InfuraProvider("rinkeby", {
+    projectId: '57a1affeb69b411191e1471cbafc75ec',
+    projectSecret:  '0x46570463ca164c73b784317a6cf57cbb',
+});
+*/
+
 //provider = new ethers.providers.JsonRpcProvider()
 //provider.listAccounts().then(result => console.log(result))
 let accounts = provider.listAccounts()
@@ -37,7 +51,7 @@ balancePromise.then((balance) => {
 });
 
 const InfuraWalletAddress = '0x9cE7871Af15a4777dd8e6c40A84F3f3f326be6b8'
-
+/*
 const depositTx = await wallet.sendTransaction({
 // ITX deposit contract (same address for all public Ethereum networks)
 to: InfuraWalletAddress,
@@ -54,7 +68,7 @@ console.log("Mining deposit transaction...");
   // The transaction is now on chain!
   console.log(`Mined in block ${receipt.blockNumber}`);
 
-
+*/
 
 
 
@@ -72,14 +86,44 @@ var compound = new Compound('https://rinkeby.infura.io/v3/57a1affeb69b411191e147
 // const trxOptions = { gasLimit: 250000, mantissa: false };
 
 (async function() {
-  const trxOptions = {
-    mantissa: false,
-    // from: myWalletAddress, 
-  };
-  console.log('Supplying ETH to the Compound protocol...');
-  const trx = await compound.supply(Compound.ETH, 1, true, trxOptions);
-  console.log('Ethers.js transaction object', trx);
 
+    //const acc = await Compound.comp.getCompAccrued(InfuraWalletAddress);
+    //console.log('Accrued', acc);
+
+
+    const trx1 = await compound.enterMarkets(Compound.ETH); // Use [] for multiple
+    console.log('Ethers.js transaction object', trx1);
+    
+    const daiScaledUp = '32000000000000000000';
+    const trxOptions = { gasLimit: 500000, mantissa: true };
+  
+    console.log('Borrowing 32 Dai...');
+    const trx2 = await compound.borrow(Compound.DAI, daiScaledUp, trxOptions);
+  
+    console.log('the borrow action - Ethers.js transaction object', trx2);
+  
+    //const trx3 = await compound.exitMarket(Compound.ETH);
+    //console.log('Ethers.js transaction object', trx3);
+  
+    //console.log('Ethers.js transaction object', trx);
+
+ 
+    
+    
+    //const bal = await Compound.eth.getBalance(InfuraWalletAddress, provider);
+    //console.log('Balance', bal);
+    
+    /*
+    const cUsdcMarketData = await Compound.api.marketHistory({
+        "asset": Compound.util.getAddress(Compound.DAI),
+        "min_block_timestamp": 1559339900,
+        "max_block_timestamp": 1598320674,
+        "num_buckets": 10,
+      });
+    
+      console.log('cUsdcMarketData', cUsdcMarketData); // JavaScript Object
+    
+      */
 })().catch(console.error);
 
 balancePromise.then((balance) => {
